@@ -16,8 +16,7 @@
 /**
  * Register the classes
  */
-ClassLoader::addClasses(array
-(
-	// Models
-	'Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel.php'
-));
+if( version_compare( VERSION, '3.5', '>=' ) )
+	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C35.php') );
+else
+	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel.php') );
