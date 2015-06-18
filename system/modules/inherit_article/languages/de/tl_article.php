@@ -14,3 +14,4 @@
 
 
 $GLOBALS['TL_LANG']['tl_article']['inherit'] = array('Vererben','Artikel in der Seitenstruktur nach unten vererben.');
+$GLOBALS['TL_LANG']['tl_article']['inheritLevel'] = array('Maximale Vererbung','Anzahl an Seitenebenen, die der Artikel maximal nach unten vererbt wird (0 = kein Limit).');

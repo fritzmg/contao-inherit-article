@@ -127,11 +127,12 @@ class ArticleModel extends \Model
 		$objCollectionTotal = null;
 
 		// now go through each parent id
+		$level = 0;
 		foreach( $arrParent as $intPid )
 		{
 			$t = static::$strTable;
-			$arrColumns = array("$t.pid=? AND $t.inColumn=? AND ($t.inherit=1 OR $t.pid=?)");
-			$arrValues = array($intPid, $strColumn, $intCurrentPid);
+			$arrColumns = array("$t.pid=? AND $t.inColumn=? AND (($t.inherit=1 AND ($t.inheritLevel=0 OR $t.inheritLevel>=?)) OR $t.pid=?)");
+			$arrValues = array($intPid, $strColumn, $level, $intCurrentPid);
 
 			if (!BE_USER_LOGGED_IN)
 			{
@@ -153,6 +154,9 @@ class ArticleModel extends \Model
 				else
 					$objCollectionTotal = new \Model\Collection( array_merge( $objCollection->getModels(), $objCollectionTotal->getModels() ), $t );
 			}
+
+			// increase level
+			++$level;
 		}
 
 		// return the combined collection
