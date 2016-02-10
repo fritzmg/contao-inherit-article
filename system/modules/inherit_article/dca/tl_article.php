@@ -16,7 +16,7 @@
 /**
  * Add palettes to tl_article
  */
-$GLOBALS['TL_DCA']['tl_article']['palettes']['default'] = str_replace( ',space;', ',space,inherit,inheritLevel;', $GLOBALS['TL_DCA']['tl_article']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_article']['palettes']['default'] = str_replace( '{publish_legend', '{inherit_legend:hide},inherit,inheritLevel,inheritAfter;{publish_legend', $GLOBALS['TL_DCA']['tl_article']['palettes']['default']);
 
 /**
  * Add fields to tl_article
@@ -37,4 +37,13 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['inheritLevel'] = array
 	'inputType' => 'text',
 	'eval'      => array('maxlength'=>5, 'rgxp'=>'digit', 'tl_class'=>'w50'),
 	'sql'       => "smallint(5) unsigned NOT NULL default '0'"
+);
+
+$GLOBALS['TL_DCA']['tl_article']['fields']['inheritAfter'] = array
+(
+	'label'     => &$GLOBALS['TL_LANG']['tl_article']['inheritAfter'],
+	'exclude'   => true,
+	'inputType' => 'checkbox',
+	'eval'      => array('tl_class'=>'w50'),
+	'sql'       => "char(1) NOT NULL default ''"
 );

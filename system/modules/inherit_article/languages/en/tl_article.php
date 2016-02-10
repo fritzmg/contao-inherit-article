@@ -13,5 +13,7 @@
  */
 
 
+$GLOBALS['TL_LANG']['tl_article']['inherit_legend'] = 'Inheritance';
 $GLOBALS['TL_LANG']['tl_article']['inherit'] = array('Inherit','Inherit the article downwards in the page hierarchy.');
 $GLOBALS['TL_LANG']['tl_article']['inheritLevel'] = array('Maximum inheritance','Number of pages the article is inhertied downwards in the hierarchy (0 = all).');
+$GLOBALS['TL_LANG']['tl_article']['inheritAfter'] = array('Add to end','Adds this inherited article to the end of the others.');

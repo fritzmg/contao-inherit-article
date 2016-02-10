@@ -93,6 +93,9 @@ class ArticleModel extends \Model
 	 */
 	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
 	{
+		// get the table
+		$t = static::$strTable;
+
 		// get all the parents
 		$arrParent = array( $intPid );
 		
@@ -126,11 +129,13 @@ class ArticleModel extends \Model
 		// aggregated collection
 		$objCollectionTotal = null;
 
+		// all models
+		$arrCombinedModels = array();
+
 		// now go through each parent id
 		$level = 0;
 		foreach( $arrParent as $intPid )
 		{
-			$t = static::$strTable;
 			$arrColumns = array("$t.pid=? AND $t.inColumn=? AND (($t.inherit=1 AND ($t.inheritLevel=0 OR $t.inheritLevel>=?)) OR $t.pid=?)");
 			$arrValues = array($intPid, $strColumn, $level, $intCurrentPid);
 
@@ -145,14 +150,34 @@ class ArticleModel extends \Model
 				$arrOptions['order'] = "$t.sorting";
 			}
 
-			$objCollection = static::findBy($arrColumns, $arrValues, $arrOptions);
-
-			if( !is_null( $objCollection ) )
+			// get the collection
+			if( ( $objCollection = static::findBy($arrColumns, $arrValues, $arrOptions) ) !== null )
 			{
-				if( is_null( $objCollectionTotal ) )
-					$objCollectionTotal = $objCollection;
+				// get the models
+				$arrModels = $objCollection->getModels();
+
+				// don't do anything on level 0
+				if( $level == 0 )
+				{
+					$arrCombinedModels = $arrModels;
+				}
 				else
-					$objCollectionTotal = new \Model\Collection( array_merge( $objCollection->getModels(), $objCollectionTotal->getModels() ), $t );
+				{
+					$arrInheritAfter = array();
+					$arrInheritBefore = array();
+
+					// go through each model
+					foreach( $arrModels as $objModel )
+					{
+						if( $objModel->inheritAfter )
+							$arrInheritAfter[] = $objModel;
+						else
+							$arrInheritBefore[] = $objModel;
+					}
+
+					$arrCombinedModels = array_merge( $arrCombinedModels, $arrInheritAfter );
+					$arrCombinedModels = array_merge( $arrInheritBefore, $arrCombinedModels );
+				}
 			}
 
 			// increase level
@@ -160,7 +185,7 @@ class ArticleModel extends \Model
 		}
 
 		// return the combined collection
-		return $objCollectionTotal;
+		return $arrCombinedModels ? new \Model\Collection( $arrCombinedModels, $t ) : null;
 	}
 
 
