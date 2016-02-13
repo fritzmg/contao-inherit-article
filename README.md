@@ -5,7 +5,7 @@ Simple extension to replace the `\ArticleModel` in order to allow inheritable ar
 
 Since version `1.1.0` you can also optionally set a maximum inheritance level. e.g. a maximum inheritance of `2` means that the article will only be inherited down two levels of the page hierarchy.
 
-Since version `1.2.0` you can also let the inherited article to be added after the other articles.
+Since version `1.2.0` you can also let the inherited article to be added after the other articles. This has changed to a priority setting in version `1.3.0`. A negative priority means, that the inherited article is put after regular ones.
 
 ![Article settings](https://raw.githubusercontent.com/fritzmg/contao-inherit-article/master/inherit_article.png)
 

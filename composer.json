@@ -31,7 +31,10 @@
 		"contao":{
 			"sources":{
 				"system/modules/inherit_article":"system/modules/inherit_article"
-			}
+			},
+			"runonce":[
+				"system/modules/inherit_article/runonce/runonce.php"
+			]
 		}
 	}
 }

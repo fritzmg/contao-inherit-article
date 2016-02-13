@@ -126,9 +126,6 @@ class ArticleModel extends \Model
 		// restore current parent id
 		$intCurrentPid = $arrParent[0];
 
-		// aggregated collection
-		$objCollectionTotal = null;
-
 		// all models
 		$arrCombinedModels = array();
 
@@ -156,33 +153,36 @@ class ArticleModel extends \Model
 				// get the models
 				$arrModels = $objCollection->getModels();
 
-				// don't do anything on level 0
-				if( $level == 0 )
+				// process each model
+				foreach( $arrModels as $objModel )
 				{
-					$arrCombinedModels = $arrModels;
-				}
-				else
-				{
-					$arrInheritAfter = array();
-					$arrInheritBefore = array();
+					// save the level (needed for sorting)
+					$objModel->level = $level;
 
-					// go through each model
-					foreach( $arrModels as $objModel )
-					{
-						if( $objModel->inheritAfter )
-							$arrInheritAfter[] = $objModel;
-						else
-							$arrInheritBefore[] = $objModel;
-					}
-
-					$arrCombinedModels = array_merge( $arrCombinedModels, $arrInheritAfter );
-					$arrCombinedModels = array_merge( $arrInheritBefore, $arrCombinedModels );
+					// level 0 is also always priority 0
+					if( $level == 0 )
+						$objModel->inheritPriority = 0;
 				}
+
+				// combine models
+				$arrCombinedModels = array_merge( $arrCombinedModels, $arrModels );
 			}
 
 			// increase level
 			++$level;
 		}
+
+		// sort
+		usort( $arrCombinedModels, function( $a, $b )
+		{
+			if( $a->inherit == $b->inherit && $a->inheritPriority == $b->inheritPriority && $a->level == $b->level )
+				return $a->sorting - $b->sorting;
+			if( $a->inherit == $b->inherit && $a->inheritPriority == $b->inheritPriority )
+				return $b->level - $a->level;
+			if( $a->inheritPriority == $b->inheritPriority )
+				return $b->inherit - $a->inherit;
+			return $b->inheritPriority - $a->inheritPriority;
+		});
 
 		// return the combined collection
 		return $arrCombinedModels ? new \Model\Collection( $arrCombinedModels, $t ) : null;
