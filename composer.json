@@ -22,7 +22,7 @@
 	"require":{
 		"php":">=5.2",
 		"contao/core-bundle":"~3.0 || ~4.1",
-		"contao-community-alliance/composer-plugin":"~2.4 || ~3.0"
+		"contao-community-alliance/composer-plugin":"~2.4 || ~3.0 || dev-hotfix/3.0.1"
 	},
     "replace": {
         "contao-legacy/inherit_article": "self.version"
