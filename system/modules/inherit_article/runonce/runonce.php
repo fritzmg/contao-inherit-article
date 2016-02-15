@@ -18,7 +18,6 @@
  */
 class InheritArticleRunOnce
 {
-
     public function run()
     {
         // get the database
@@ -34,11 +33,11 @@ class InheritArticleRunOnce
                 if( $objDb->fieldExists('inheritPriority', 'tl_article', true) )
                 {
                     $objDb->execute("UPDATE tl_article SET inheritPriority = '-1' WHERE inheritAfter = '1' AND inherit = '1'");
+                    \System::log('Successfully migrated inherit_article settings from <1.3.0 to >=1.3.0.',__METHOD__,TL_GENERAL);
                 }
             }
         }
     }
-
 }
 
 $objInheritArticleRunOnce = new InheritArticleRunOnce();
