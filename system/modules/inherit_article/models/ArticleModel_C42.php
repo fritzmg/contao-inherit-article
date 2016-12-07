@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -32,7 +32,6 @@ namespace Contao;
  * @property string  $groups
  * @property boolean $guests
  * @property string  $cssID
- * @property string  $space
  * @property boolean $published
  * @property string  $start
  * @property string  $stop
@@ -64,30 +63,30 @@ namespace Contao;
  * @method static ArticleModel|null findOneByStart($val, $opt=array())
  * @method static ArticleModel|null findOneByStop($val, $opt=array())
  *
- * @method static Model\Collection|ArticleModel|null findByPid($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findBySorting($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByTstamp($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByTitle($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByAlias($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByAuthor($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByInColumn($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByKeywords($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByShowTeaser($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByTeaserCssID($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByTeaser($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByPrintable($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByCustomTpl($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByProtected($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByGroups($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByGuests($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByCssID($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findBySpace($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByPublished($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByStart($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findByStop($val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findMultipleByIds($var)
- * @method static Model\Collection|ArticleModel|null findBy($col, $val, $opt=array())
- * @method static Model\Collection|ArticleModel|null findAll($opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByPid($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findBySorting($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByTstamp($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByTitle($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByAlias($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByAuthor($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByInColumn($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByKeywords($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByShowTeaser($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByTeaserCssID($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByTeaser($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByPrintable($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByCustomTpl($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByProtected($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByGroups($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByGuests($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByCssID($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findBySpace($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByPublished($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByStart($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findByStop($val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findMultipleByIds($var)
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findBy($col, $val, $opt=array())
+ * @method static Model\Collection|ArticleModel[]|ArticleModel|null findAll($opt=array())
  *
  * @method static integer countById($id, $opt=array())
  * @method static integer countByPid($val, $opt=array())
@@ -132,7 +131,7 @@ class ArticleModel extends \Model
 	 * @param integer $intPid     The page ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return static The model or null if there is no article
+	 * @return ArticleModel|null The model or null if there is no article
 	 */
 	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
 	{
@@ -151,19 +150,50 @@ class ArticleModel extends \Model
 
 
 	/**
+	 * Find a published article by its ID or alias and its page
+	 *
+	 * @param mixed   $varId      The numeric ID or alias name
+	 * @param integer $intPid     The page ID
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return ArticleModel|null The model or null if there is no article
+	 */
+	public static function findPublishedByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$arrColumns = array("($t.id=? OR $t.alias=?)");
+		$arrValues = array((is_numeric($varId) ? $varId : 0), $varId);
+
+		if ($intPid)
+		{
+			$arrColumns[] = "$t.pid=?";
+			$arrValues[] = $intPid;
+		}
+
+		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		{
+			$time = \Date::floorToMinute();
+			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+		}
+
+		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+
+	/**
 	 * Find a published article by its ID
 	 *
 	 * @param integer $intId      The article ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return static The model or null if there is no published article
+	 * @return ArticleModel|null The model or null if there is no published article
 	 */
 	public static function findPublishedById($intId, array $arrOptions=array())
 	{
 		$t = static::$strTable;
 		$arrColumns = array("$t.id=?");
 
-		if (!BE_USER_LOGGED_IN)
+		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -180,7 +210,7 @@ class ArticleModel extends \Model
 	 * @param string  $strColumn  The column name
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
 	 */
 	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
 	{
@@ -227,7 +257,7 @@ class ArticleModel extends \Model
 			$arrColumns = array("$t.pid=? AND $t.inColumn=? AND (($t.inherit=1 AND ($t.inheritLevel=0 OR $t.inheritLevel>=?)) OR $t.pid=?)");
 			$arrValues = array($intPid, $strColumn, $level, $intCurrentPid);
 
-			if (!BE_USER_LOGGED_IN)
+			if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
 			{
 				$time = \Date::floorToMinute();
 				$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -264,8 +294,10 @@ class ArticleModel extends \Model
 		}
 
 		// sort
-		usort( $arrCombinedModels, function( $a, $b )
+		usort( $arrCombinedModels, function( $a, $b ) use ( $intCurrentPid )
 		{
+			if( $a->pid == $intCurrentPid && $b->pid == $intCurrentPid )
+				return $a->sorting - $b->sorting;
 			if( $a->inherit == $b->inherit && $a->inheritPriority == $b->inheritPriority && $a->level == $b->level )
 				return $a->sorting - $b->sorting;
 			if( $a->inherit == $b->inherit && $a->inheritPriority == $b->inheritPriority )
@@ -287,7 +319,7 @@ class ArticleModel extends \Model
 	 * @param string  $strColumn  The column name
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
 	 */
 	public static function findPublishedWithTeaserByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
 	{
@@ -295,7 +327,7 @@ class ArticleModel extends \Model
 		$arrColumns = array("$t.pid=? AND $t.inColumn=? AND $t.showTeaser=1");
 		$arrValues = array($intPid, $strColumn);
 
-		if (!BE_USER_LOGGED_IN)
+		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
