@@ -19,7 +19,7 @@
 if( version_compare( VERSION, '4.2', '>=' ) )
 	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C42.php') );
 elseif( version_compare( VERSION, '4.1', '>=' ) )
-	throw new Exeption('Contao 4.1 no longer supported by inherit_article');
+	throw new \Exception('Contao 4.1 no longer supported by inherit_article');
 elseif( version_compare( VERSION, '3.5', '>=' ) )
 	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C35.php') );
 else
