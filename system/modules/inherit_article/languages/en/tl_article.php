@@ -5,7 +5,7 @@
  *
  * Extension to replace the ArticleModel in order to allow inheritable articles
  * 
- * @copyright inspiredminds 2016
+ * @copyright inspiredminds 2016-2017
  * @package   inherit_article
  * @link      http://www.inspiredminds.at
  * @author    Fritz Michael Gschwantner <fmg@inspiredminds.at>
