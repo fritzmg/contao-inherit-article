@@ -112,7 +112,7 @@ namespace Contao;
  * @method static integer countByStop($val, $opt=array())
  *
  * @author Leo Feyer <https://github.com/leofeyer>
- * @author    Fritz Michael Gschwantner <fmg@inspiredminds.at>
+ * @author Fritz Michael Gschwantner <fmg@inspiredminds.at>
  */
 class ArticleModel extends \Model
 {
@@ -303,7 +303,7 @@ class ArticleModel extends \Model
 			if( $a->inherit == $b->inherit && $a->inheritPriority == $b->inheritPriority )
 				return $b->level - $a->level;
 			if( $a->inheritPriority == $b->inheritPriority )
-				return $b->inherit - $a->inherit;
+				return (int)$b->inherit - (int)$a->inherit;
 			return $b->inheritPriority - $a->inheritPriority;
 		});
 

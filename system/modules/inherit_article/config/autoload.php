@@ -17,10 +17,10 @@
  * Register the classes
  */
 if( version_compare( VERSION, '4.2', '>=' ) )
-	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C42.php') );
-elseif( version_compare( VERSION, '4.1', '>=' ) )
-	throw new \Exception('Contao 4.1 no longer supported by inherit_article');
+	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C4.php') );
+elseif( version_compare( VERSION, '4.0', '>=' ) )
+	throw new \Exception('Contao '.VERSION.' no longer supported by inherit_article');
 elseif( version_compare( VERSION, '3.5', '>=' ) )
-	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C35.php') );
+	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel_C3.php') );
 else
-	ClassLoader::addClasses( array('Contao\ArticleModel' => 'system/modules/inherit_article/models/ArticleModel.php') );
+	throw new \Exception('Contao '.VERSION.' no longer supported by inherit_article');
