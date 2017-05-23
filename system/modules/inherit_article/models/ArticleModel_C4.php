@@ -310,8 +310,8 @@ class ArticleModel extends \Model
 		// return the combined collection
 		return $arrCombinedModels ? new \Model\Collection( $arrCombinedModels, $t ) : null;
 	}
-	
-	
+
+
 	/**
 	 * Find all published articles with teaser by their parent ID
 	 *
