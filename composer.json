@@ -1,43 +1,37 @@
 {
-	"name":"fritzmg/contao-inherit-article",
-	"description":"Extension to replace the ArticleModel in order to allow inheritable articles",
-	"keywords":["contao", "article", "inherit"],
-	"type":"contao-module",
-	"homepage":"http://www.inspiredminds.at",
-	"license":"GPL-2.0",
-	"authors":[
-		{
-			"name":"Fritz Michael Gschwantner",
-			"homepage":"http://www.inspiredminds.at",
-			"email":"fmg@inspiredminds.at",
-			"role":"Developer"
-		}
-	],
-	"support":{
-		"email":"fmg@inspiredminds.at",
-		"issues":"https://github.com/fritzmg/contao-inherit-article/issues",
-		"source":"https://github.com/fritzmg/contao-inherit-article",
-		"forum":"https://community.contao.org/de"
-	},
-	"require":{
-		"php":">=5.2",
-		"contao/core-bundle":"~3.5 || ~4.2",
-		"contao-community-alliance/composer-plugin":"~2.4 || ~3.0"
-	},
-	"conflict":{
-		"contao-community-alliance/composer-plugin":"3.0.0"
-	},
-    "replace": {
-        "contao-legacy/inherit_article": "self.version"
+    "name":"fritzmg/contao-inherit-article",
+    "description":"Extension to allow inheritable page articles within Contao.",
+    "keywords":["contao", "article", "inherit"],
+    "type":"contao-bundle",
+    "homepage":"http://www.inspiredminds.at",
+    "license":"LGPL-3.0-or-later",
+    "authors":[
+        {
+            "name":"Fritz Michael Gschwantner",
+            "homepage":"http://www.inspiredminds.at",
+            "email":"fmg@inspiredminds.at",
+            "role":"Developer"
+        }
+    ],
+    "support":{
+        "email":"fmg@inspiredminds.at",
+        "issues":"https://github.com/fritzmg/contao-inherit-article/issues",
+        "source":"https://github.com/fritzmg/contao-inherit-article",
+        "forum":"https://community.contao.org/de"
     },
-	"extra":{
-		"contao":{
-			"sources":{
-				"system/modules/inherit_article":"system/modules/inherit_article"
-			},
-			"runonce":[
-				"system/modules/inherit_article/runonce/runonce.php"
-			]
-		}
-	}
+    "require":{
+        "php": ">=7.1",
+        "contao/core-bundle": "^4.4"
+    },
+    "require-dev": {
+         "contao/manager-plugin": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "InheritArticleBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "InheritArticleBundle\\ContaoManager\\Plugin"
+    }
 }
