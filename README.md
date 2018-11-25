@@ -1,4 +1,4 @@
-[![](https://img.shields.io/maintenance/yes/2017.svg)](https://github.com/fritzmg/contao-inherit-article)
+[![](https://img.shields.io/maintenance/yes/2018.svg)](https://github.com/fritzmg/contao-inherit-article)
 [![](https://img.shields.io/packagist/v/fritzmg/contao-inherit-article.svg)](https://packagist.org/packages/fritzmg/contao-inherit-article)
 [![](https://img.shields.io/packagist/dt/fritzmg/contao-inherit-article.svg)](https://packagist.org/packages/fritzmg/contao-inherit-article)
 
