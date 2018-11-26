@@ -25,6 +25,7 @@ class InheritArticleListener implements FrameworkAwareInterface
 
     protected $columns;
     protected $sections;
+    protected $modules;
     protected $db;
 
     public function __construct(Connection $db)
@@ -38,9 +39,10 @@ class InheritArticleListener implements FrameworkAwareInterface
         $stringUtil = $this->framework->getAdapter(\Contao\StringUtil::class);
         $moduleModel = $this->framework->getAdapter(\Contao\ModuleModel::class);
 
-        // Reset the columns
+        // Reset the cached data
         $this->columns = [];
         $this->sections = [];
+        $this->modules = serialize([]);
 
         // Initialize modules and sections
         $arrSections = ['header', 'left', 'right', 'main', 'footer'];
@@ -102,6 +104,7 @@ class InheritArticleListener implements FrameworkAwareInterface
         }
 
         // Empty the modules in the layout
+        $this->modules = $layoutModel->modules;
         $layoutModel->modules = serialize([]);
     }
 
@@ -112,6 +115,8 @@ class InheritArticleListener implements FrameworkAwareInterface
         }
 
         $pageRegular->Template->sections = $this->sections;
+
+        $layoutModel->modules = $this->modules;
     }
 
     protected function getFrontendModule(PageModel $page, $module, string $column): string
@@ -122,34 +127,34 @@ class InheritArticleListener implements FrameworkAwareInterface
             return $generatedModule;
         }
 
-        // initialize pid
+        // Initialize pid
         $pid = $page->id;
 
-        // get all the parents
+        // Get all the parents
         $parents = [];
 
-        // search for next parent ids while parent id > 0
+        // Search for next parent ids while parent id > 0
         do {
-            // get the next pid
+            // Get the next pid
             $parent = $this->db->executeQuery('SELECT pid FROM tl_page WHERE id=?', [$pid])->fetch();
 
-            // if there are no parents anymore, break the loop
+            // If there are no parents anymore, break the loop
             if (!$parent) {
                 break;
             }
 
-            // get the parent id
+            // Get the parent id
             $pid = $parent['pid'];
 
-            // store id
+            // Store id
             $parents[] = $pid;
         } while ($pid);
 
-        // initialize rendered article modules
+        // Initialize rendered article modules
         $renderedArticles = [];
         $renderedArticles[0] = $generatedModule;
 
-        // go through each parent
+        // Go through each parent
         $level = 1;
         foreach ($parents as $pid) {
             $inheritArticles = $this->getInheritedArticles($pid, $column, $level);
@@ -160,19 +165,20 @@ class InheritArticleListener implements FrameworkAwareInterface
                 }
             }
 
-            // increase level
+            // iIncrease level
             ++$level;
         }
 
-        // sort by key
+        // Sort by key
         krsort($renderedArticles);
 
-        // return combined articles
+        // Return combined articles
         return implode('', $renderedArticles);
     }
 
     protected function getInheritedArticles($pid, string $column, int $level): array
     {
+        // Get adapters
         $controller = $this->framework->getAdapter(\Contao\Controller::class);
         $articleModel = $this->framework->getAdapter(\Contao\ArticleModel::class);
         $pageModel = $this->framework->getAdapter(\Contao\PageModel::class);
@@ -196,7 +202,7 @@ class InheritArticleListener implements FrameworkAwareInterface
         $renderedArticles = [];
 
         if (null !== ($articles = $articleModel->findBy($columns, $values, $options))) {
-            // override global page object
+            // Override global page object
             global $objPage;
             $currentPage = $objPage;
             $objPage = $pageModel->findById($pid);
@@ -205,7 +211,7 @@ class InheritArticleListener implements FrameworkAwareInterface
                 $renderedArticles[$article->inheritPriority] = $controller->getArticle($article->id, false, false, $column);
             }
 
-            // reset global page object
+            // Reset global page object
             $objPage = $currentPage;
         }
 
