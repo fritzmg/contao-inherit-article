@@ -15,7 +15,7 @@ declare(strict_types=1);
  */
 $GLOBALS['TL_DCA']['tl_article']['palettes']['default'] = str_replace('{publish_legend', '{inherit_legend:hide},inherit;{publish_legend', $GLOBALS['TL_DCA']['tl_article']['palettes']['default']);
 $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'inherit';
-$GLOBALS['TL_DCA']['tl_article']['subpalettes']['inherit'] = 'inheritLevel,inheritPriority';
+$GLOBALS['TL_DCA']['tl_article']['subpalettes']['inherit'] = 'inheritLevel,inheritPriority,inheritUnpublished';
 
 /*
  * Add fields to tl_article
@@ -42,4 +42,12 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['inheritPriority'] = [
     'inputType' => 'text',
     'eval' => ['maxlength' => 5, 'rgxp' => 'digit', 'tl_class' => 'w50'],
     'sql' => "smallint(5) NOT NULL default '0'",
+];
+
+$GLOBALS['TL_DCA']['tl_article']['fields']['inheritUnpublished'] = [
+    'exclude' => true,
+    'label' => &$GLOBALS['TL_LANG']['tl_article']['inheritUnpublished'],
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50'],
+    'sql' => "char(1) NOT NULL default ''",
 ];

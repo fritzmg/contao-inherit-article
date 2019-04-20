@@ -165,7 +165,7 @@ class InheritArticleListener implements FrameworkAwareInterface
                 }
             }
 
-            // iIncrease level
+            // Increase level
             ++$level;
         }
 
@@ -208,7 +208,19 @@ class InheritArticleListener implements FrameworkAwareInterface
             $objPage = $pageModel->findById($pid);
 
             foreach ($articles as $article) {
-                $renderedArticles[$article->inheritPriority] = $controller->getArticle($article->id, false, false, $column);
+                $published = $article->published;
+
+                if (!$article->published && $article->inheritUnpublished) {
+                    $article->published = true;
+                }
+
+                if (!isset($renderedArticles[$article->inheritPriority])) {
+                    $renderedArticles[$article->inheritPriority] = '';
+                }
+
+                $renderedArticles[$article->inheritPriority] .= $controller->getArticle($article->id, false, false, $column);
+
+                $article->published = $published;
             }
 
             // Reset global page object
