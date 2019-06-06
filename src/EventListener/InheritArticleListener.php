@@ -202,11 +202,6 @@ class InheritArticleListener implements FrameworkAwareInterface
         $renderedArticles = [];
 
         if (null !== ($articles = $articleModel->findBy($columns, $values, $options))) {
-            // Override global page object
-            global $objPage;
-            $currentPage = $objPage;
-            $objPage = $pageModel->findById($pid);
-
             foreach ($articles as $article) {
                 $published = $article->published;
 
@@ -218,13 +213,10 @@ class InheritArticleListener implements FrameworkAwareInterface
                     $renderedArticles[$article->inheritPriority] = '';
                 }
 
-                $renderedArticles[$article->inheritPriority] .= $controller->getArticle($article->id, false, false, $column);
+                $renderedArticles[$article->inheritPriority] .= $controller->getArticle($article->id, false, null, $column);
 
                 $article->published = $published;
             }
-
-            // Reset global page object
-            $objPage = $currentPage;
         }
 
         return $renderedArticles;
