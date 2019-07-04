@@ -213,7 +213,7 @@ class InheritArticleListener implements FrameworkAwareInterface
                     $renderedArticles[$article->inheritPriority] = '';
                 }
 
-                $renderedArticles[$article->inheritPriority] .= $controller->getArticle($article->id, false, null, $column);
+                $renderedArticles[$article->inheritPriority] .= $controller->getArticle($article, false, false, $column);
 
                 $article->published = $published;
             }
