@@ -12,30 +12,42 @@ declare(strict_types=1);
 
 namespace InheritArticleBundle\EventListener;
 
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Image\PictureFactory;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Doctrine\DBAL\Connection;
 
-class InheritArticleListener implements FrameworkAwareInterface
+class InheritArticleListener
 {
-    use FrameworkAwareTrait;
-
+    /** @var array */
     protected $columns;
+
+    /** @var array */
     protected $sections;
+
+    /** @var string */
     protected $modules;
+
+    /** @var Connection */
     protected $db;
 
-    public function __construct(Connection $db)
+    /** @var ContaoFramework */
+    protected $framework;
+
+    /** @var PictureFactory */
+    protected $pictureFactory;
+
+    public function __construct(Connection $db, ContaoFramework $framework, PictureFactory $pictureFactory)
     {
         $this->db = $db;
+        $this->framework = $framework;
+        $this->pictureFactory = $pictureFactory;
     }
 
     public function onGetPageLayout(PageModel $pageModel, LayoutModel $layoutModel, PageRegular $pageRegular): void
     {
-        $this->framework->initialize();
         $stringUtil = $this->framework->getAdapter(\Contao\StringUtil::class);
         $moduleModel = $this->framework->getAdapter(\Contao\ModuleModel::class);
 
@@ -61,6 +73,9 @@ class InheritArticleListener implements FrameworkAwareInterface
 
         if (null !== $objModules || 0 === $arrModules[0]['mod'] || '0' === $arrModules[0]['mod']) { // see #4137
             $arrMapper = [];
+
+            // Set theme and layout related information in the page object (see #8)
+            $this->applyThemeAndLayout($pageModel, $layoutModel);
 
             // Create a mapper array in case a module is included more than once (see #4849)
             if (null !== $objModules) {
@@ -219,5 +234,22 @@ class InheritArticleListener implements FrameworkAwareInterface
         }
 
         return $renderedArticles;
+    }
+
+    /**
+     * Sets theme and layout related information in the page object,
+     * which is usually done by Contao after the getPageLayout hook.
+     */
+    protected function applyThemeAndLayout(PageModel $page, LayoutModel $layout): void
+    {
+        /** @var \Contao\ThemeModel $theme */
+        $theme = $layout->getRelated('pid');
+        $this->pictureFactory->setDefaultDensities($theme->defaultImageDensities);
+        $page->layoutId = $layout->id;
+        $page->template = $layout->template ?: 'fe_page';
+        $page->templateGroup = $theme->templates;
+        [$strFormat, $strVariant] = explode('_', $layout->doctype);
+        $page->outputFormat = $strFormat;
+        $page->outputVariant = $strVariant;
     }
 }

@@ -1,10 +1,7 @@
 services:
-    _instanceof:
-        Contao\CoreBundle\Framework\FrameworkAwareInterface:
-            calls:
-                - ["setFramework", ["@contao.framework"]]
-
-    contao_inherit_article.listener:
-        class: InheritArticleBundle\EventListener\InheritArticleListener
-        arguments: ['@doctrine.dbal.default_connection']
+    InheritArticleBundle\EventListener\InheritArticleListener:
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '@contao.framework'
+            - '@contao.image.picture_factory'
         public: true

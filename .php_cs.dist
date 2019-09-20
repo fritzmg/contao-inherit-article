@@ -9,8 +9,6 @@ This file is part of the InheritArticle Bundle.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('Resources')
-    ->exclude('Fixtures')
     ->in([
         __DIR__.'/src',
     ])

@@ -10,5 +10,7 @@ declare(strict_types=1);
  * @license LGPL-3.0-or-later
  */
 
-$GLOBALS['TL_HOOKS']['getPageLayout'][] = ['contao_inherit_article.listener', 'onGetPageLayout'];
-$GLOBALS['TL_HOOKS']['generatePage'][] = ['contao_inherit_article.listener', 'onGeneratePage'];
+use InheritArticleBundle\EventListener\InheritArticleListener;
+
+$GLOBALS['TL_HOOKS']['getPageLayout'][] = [InheritArticleListener::class, 'onGetPageLayout'];
+$GLOBALS['TL_HOOKS']['generatePage'][] = [InheritArticleListener::class, 'onGeneratePage'];
