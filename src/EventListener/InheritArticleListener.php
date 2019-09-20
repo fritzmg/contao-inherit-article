@@ -181,7 +181,6 @@ class InheritArticleListener implements FrameworkAwareInterface
         // Get adapters
         $controller = $this->framework->getAdapter(\Contao\Controller::class);
         $articleModel = $this->framework->getAdapter(\Contao\ArticleModel::class);
-        $pageModel = $this->framework->getAdapter(\Contao\PageModel::class);
 
         $t = $articleModel->getTable();
         $columns = [
