@@ -248,8 +248,12 @@ class InheritArticleListener
         $page->layoutId = $layout->id;
         $page->template = $layout->template ?: 'fe_page';
         $page->templateGroup = $theme->templates;
-        [$strFormat, $strVariant] = explode('_', $layout->doctype);
-        $page->outputFormat = $strFormat;
-        $page->outputVariant = $strVariant;
+        $page->minifyMarkup = $theme->minifyMarkup;
+        
+        if (null !== $layout->doctype) {
+            [$format, $variant] = explode('_', $layout->doctype);
+            $page->outputFormat = $format;
+            $page->outputVariant = $variant;
+        }
     }
 }
