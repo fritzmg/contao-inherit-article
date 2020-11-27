@@ -18,6 +18,12 @@
         "source": "https://github.com/fritzmg/contao-inherit-article",
         "forum": "https://community.contao.org/de"
     },
+    "funding": [
+        {
+            "type":"github",
+            "url":"https://github.com/sponsors/fritzmg"
+        }
+    ],
     "require": {
         "php": ">=7.1",
         "contao/core-bundle": "^4.4",
