@@ -1,7 +1,5 @@
 services:
     InheritArticleBundle\EventListener\InheritArticleListener:
         arguments:
-            - '@doctrine.dbal.default_connection'
-            - '@contao.framework'
-            - '@contao.image.picture_factory'
+            - '@database_connection'
         public: true
