@@ -14,3 +14,4 @@ use InheritArticleBundle\EventListener\InheritArticleListener;
 
 $GLOBALS['TL_HOOKS']['getPageLayout'][] = [InheritArticleListener::class, 'onGetPageLayout'];
 $GLOBALS['TL_HOOKS']['generatePage'][] = [InheritArticleListener::class, 'onGeneratePage'];
+$GLOBALS['TL_HOOKS']['getArticles'][] = [InheritArticleListener::class, 'onGetArticles'];

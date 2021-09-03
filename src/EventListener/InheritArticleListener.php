@@ -18,8 +18,9 @@ use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Doctrine\DBAL\Connection;
+use Symfony\Contracts\Service\ResetInterface;
 
-class InheritArticleListener
+class InheritArticleListener implements ResetInterface
 {
     /** @var array */
     protected $columns;
@@ -29,6 +30,9 @@ class InheritArticleListener
 
     /** @var string */
     protected $modules;
+
+    /** @var bool */
+    protected $isGetArticlesHook = false;
 
     /** @var Connection */
     protected $db;
@@ -52,9 +56,7 @@ class InheritArticleListener
         $moduleModel = $this->framework->getAdapter(\Contao\ModuleModel::class);
 
         // Reset the cached data
-        $this->columns = [];
-        $this->sections = [];
-        $this->modules = serialize([]);
+        $this->reset();
 
         // Initialize modules and sections
         $arrSections = ['header', 'left', 'right', 'main', 'footer'];
@@ -131,7 +133,30 @@ class InheritArticleListener
 
         $pageRegular->Template->sections = $this->sections;
 
-        $layoutModel->modules = $this->modules;
+        $layoutModel->modules = $this->modules ?? serialize([]);
+    }
+
+    public function onGetArticles(int $pageId, string $column): ?string
+    {
+        // Recursion
+        if ($this->isGetArticlesHook) {
+            return null;
+        }
+
+        $this->isGetArticlesHook = true;
+
+        $articles = $this->getFrontendModule(PageModel::findById($pageId), 0, $column);
+
+        $this->isGetArticlesHook = false;
+
+        return $articles;
+    }
+
+    public function reset(): void
+    {
+        $this->columns = [];
+        $this->sections = [];
+        $this->modules = null;
     }
 
     protected function getFrontendModule(PageModel $page, $module, string $column): string
@@ -249,7 +274,7 @@ class InheritArticleListener
         $page->template = $layout->template ?: 'fe_page';
         $page->templateGroup = $theme->templates;
         $page->minifyMarkup = $theme->minifyMarkup;
-        
+
         if (null !== $layout->doctype) {
             [$format, $variant] = explode('_', $layout->doctype);
             $page->outputFormat = $format;
