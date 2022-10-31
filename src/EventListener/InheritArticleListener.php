@@ -58,7 +58,7 @@ class InheritArticleListener
         // Search for next parent ids while parent id > 0
         do {
             // Get the next pid
-            $parent = $this->db->executeQuery('SELECT pid FROM tl_page WHERE id=?', [$pid])->fetchAssociative();
+            $parent = $this->db->fetchAssociative('SELECT pid FROM tl_page WHERE id=?', [$pid]);
 
             // If there are no parents anymore, break the loop
             if (!$parent) {
