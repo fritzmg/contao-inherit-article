@@ -25,7 +25,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.2",
         "contao/core-bundle": "^4.13 || ^5.0",
         "doctrine/dbal": "^3.0 || ^4.0",
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.4",
@@ -33,8 +33,9 @@
         "symfony/http-kernel": "^5.4 || ^6.4 || ^7.4"
     },
     "require-dev": {
+        "contao/easy-coding-standard": "^6.0",
         "contao/manager-plugin": "^2.0",
-        "friendsofphp/php-cs-fixer": "^2.16 || ^3.0"
+        "contao/rector": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -43,5 +44,13 @@
     },
     "extra": {
         "contao-manager-plugin": "InheritArticleBundle\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "cs": [
+            "@rector",
+            "@ecs"
+        ],
+        "rector": "@php vendor/bin/rector",
+        "ecs": "@php vendor/bin/ecs --fix"
     }
 }

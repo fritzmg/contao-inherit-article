@@ -3,11 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the InheritArticle Bundle.
- *
- * (c) inspiredminds
- *
- * @license LGPL-3.0-or-later
+ * (c) INSPIRED MINDS
  */
 
 namespace InheritArticleBundle\ContaoManager;
@@ -23,9 +19,6 @@ use InheritArticleBundle\InheritArticleBundle;
  */
 class Plugin implements BundlePluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getBundles(ParserInterface $parser)
     {
         return [

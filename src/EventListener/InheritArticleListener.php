@@ -18,18 +18,13 @@ use Doctrine\DBAL\Connection;
 
 class InheritArticleListener
 {
-    /** @var bool */
-    private $isGetArticlesHook = false;
+    private bool $isGetArticlesHook = false;
 
-    /** @var Connection */
-    private $db;
-
-    public function __construct(Connection $db)
+    public function __construct(private readonly Connection $db)
     {
-        $this->db = $db;
     }
 
-    public function onGetArticles(int $pageId, string $column): ?string
+    public function onGetArticles(int $pageId, string $column): string|null
     {
         // Recursion
         if ($this->isGetArticlesHook) {
@@ -78,13 +73,10 @@ class InheritArticleListener
 
         // Go through each parent
         $level = 1;
-        foreach ($parents as $pid) {
-            $inheritArticles = $this->getInheritedArticles($pid, $column, $level);
 
-            if (!empty($inheritArticles)) {
-                foreach ($inheritArticles as $priority => $article) {
-                    $renderedArticles[$priority] = $article.($renderedArticles[$priority] ?? '');
-                }
+        foreach ($parents as $pid) {
+            foreach ($this->getInheritedArticles($pid, $column, $level) as $priority => $article) {
+                $renderedArticles[$priority] = $article.($renderedArticles[$priority] ?? '');
             }
 
             // Increase level
@@ -118,22 +110,20 @@ class InheritArticleListener
 
         $renderedArticles = [];
 
-        if (null !== ($articles = ArticleModel::findBy($columns, $values, $options))) {
-            foreach ($articles as $article) {
-                $published = $article->published;
+        foreach (ArticleModel::findBy($columns, $values, $options) ?? [] as $article) {
+            $published = $article->published;
 
-                if (!$article->published && $article->inheritUnpublished) {
-                    $article->published = true;
-                }
-
-                if (!isset($renderedArticles[$article->inheritPriority])) {
-                    $renderedArticles[$article->inheritPriority] = '';
-                }
-
-                $renderedArticles[$article->inheritPriority] .= Controller::getArticle($article, false, false, $column);
-
-                $article->published = $published;
+            if (!$article->published && $article->inheritUnpublished) {
+                $article->published = true;
             }
+
+            if (!isset($renderedArticles[$article->inheritPriority])) {
+                $renderedArticles[$article->inheritPriority] = '';
+            }
+
+            $renderedArticles[$article->inheritPriority] .= Controller::getArticle($article, false, false, $column);
+
+            $article->published = $published;
         }
 
         return $renderedArticles;
